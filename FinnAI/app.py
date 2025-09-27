@@ -23,31 +23,205 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Global Styles */
+    .main {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Header Styles */
     .main-header {
-        font-size: 2.5rem;
-        color: #1f77b4;
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 3rem;
+        font-weight: 400;
+    }
+    
+    /* Card Styles */
     .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin: 0.5rem 0;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
     }
+    
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .metric-card strong {
+        color: #1f2937;
+        font-weight: 600;
+    }
+    
+    /* Message Styles */
     .success-message {
-        background-color: #d4edda;
-        color: #155724;
-        padding: 1rem;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+        padding: 1.5rem;
+        border-radius: 12px;
         margin: 1rem 0;
+        border-left: 4px solid #10b981;
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
     }
+    
     .error-message {
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 1rem;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+        padding: 1.5rem;
+        border-radius: 12px;
         margin: 1rem 0;
+        border-left: 4px solid #ef4444;
+        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+    }
+    
+    .info-message {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        border-left: 4px solid #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Sidebar Styles */
+    .sidebar .sidebar-content {
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    
+    .sidebar-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .sidebar-section h3 {
+        color: #1f2937;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    /* Button Styles */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Input Styles */
+    .stTextInput > div > div > input {
+        border-radius: 8px;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* Metric Display */
+    [data-testid="metric-container"] {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #e5e7eb;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    [data-testid="metric-container"] > div {
+        color: #1f2937;
+    }
+    
+    [data-testid="metric-container"] [data-testid="metric-value"] {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    [data-testid="metric-container"] [data-testid="metric-label"] {
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-weight: 500;
+    }
+    
+    /* Chart Container */
+    .stPlotlyChart {
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    /* Dataframe Styles */
+    .stDataFrame {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Loading Spinner */
+    .stSpinner {
+        color: #667eea;
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -67,9 +241,128 @@ def format_currency(amount):
     else:
         return f"${amount:.2f}"
 
+def _validate_revenue_budget_data(result):
+    """Validate revenue vs budget data for chart creation"""
+    try:
+        # Check if required fields exist
+        required_fields = ['actual_revenue', 'budget_revenue']
+        for field in required_fields:
+            if field not in result:
+                return False
+        
+        # Check if values are numeric and not None
+        actual = result['actual_revenue']
+        budget = result['budget_revenue']
+        
+        if actual is None or budget is None:
+            return False
+        
+        # Check if values are numbers
+        try:
+            actual = float(actual)
+            budget = float(budget)
+        except (ValueError, TypeError):
+            return False
+        
+        # Check if at least one value is non-zero (meaningful data)
+        if actual == 0 and budget == 0:
+            return False
+        
+        # Check if values are reasonable (not extremely large or negative)
+        if abs(actual) > 1e12 or abs(budget) > 1e12:  # 1 trillion limit
+            return False
+        
+        return True
+        
+    except Exception:
+        return False
+
+def _validate_trend_data(result):
+    """Validate trend data for chart creation"""
+    try:
+        # Check if required fields exist
+        required_fields = ['months', 'margins']
+        for field in required_fields:
+            if field not in result:
+                return False
+        
+        months = result['months']
+        margins = result['margins']
+        
+        # Check if data is not empty
+        if not months or not margins:
+            return False
+        
+        # Check if both lists have the same length
+        if len(months) != len(margins):
+            return False
+        
+        # Check if we have at least 2 data points for a meaningful trend
+        if len(months) < 2:
+            return False
+        
+        # Check if margins contain valid numeric data
+        try:
+            margins_float = [float(m) for m in margins]
+            # Check if all values are reasonable percentages
+            if any(m < -1000 or m > 1000 for m in margins_float):
+                return False
+        except (ValueError, TypeError):
+            return False
+        
+        return True
+        
+    except Exception:
+        return False
+
+def _validate_opex_data(result):
+    """Validate OPEX breakdown data for chart creation"""
+    try:
+        # Check if required fields exist
+        if 'breakdown' not in result:
+            return False
+        
+        breakdown = result['breakdown']
+        
+        # Check if breakdown is not empty
+        if not breakdown:
+            return False
+        
+        # Check if we have at least 2 categories for a meaningful breakdown
+        if len(breakdown) < 2:
+            return False
+        
+        # Check if all values are numeric and positive
+        total_value = 0
+        for category, value in breakdown.items():
+            try:
+                value_float = float(value)
+                if value_float < 0:  # Negative expenses don't make sense for breakdown
+                    return False
+                total_value += value_float
+            except (ValueError, TypeError):
+                return False
+        
+        # Check if total is meaningful (not zero)
+        if total_value == 0:
+            return False
+        
+        # Check if total is reasonable
+        if total_value > 1e12:  # 1 trillion limit
+            return False
+        
+        return True
+        
+    except Exception:
+        return False
+
 def create_revenue_vs_budget_chart(result):
     """Create a revenue vs budget comparison chart"""
     if "error" in result:
+        return None
+    
+    # Validate data before creating chart
+    if not _validate_revenue_budget_data(result):
         return None
     
     fig = go.Figure(data=[
@@ -94,6 +387,10 @@ def create_gross_margin_trend_chart(result):
     if "error" in result:
         return None
     
+    # Validate data before creating chart
+    if not _validate_trend_data(result):
+        return None
+    
     fig = go.Figure(data=go.Scatter(
         x=result['months'],
         y=result['margins'],
@@ -115,6 +412,10 @@ def create_gross_margin_trend_chart(result):
 def create_opex_breakdown_chart(result):
     """Create an Opex breakdown pie chart"""
     if "error" in result:
+        return None
+    
+    # Validate data before creating chart
+    if not _validate_opex_data(result):
         return None
     
     labels = list(result['breakdown'].keys())
@@ -145,8 +446,13 @@ def display_response(response):
     result = response['result']
     confidence = response['confidence']
     
-    # Display confidence score
-    st.info(f"Intent: {intent.replace('_', ' ').title()} (Confidence: {confidence:.2f})")
+    # Display confidence score with better styling
+    confidence_color = "🟢" if confidence > 0.8 else "🟡" if confidence > 0.6 else "🔴"
+    st.markdown(f"""
+    <div class="info-message">
+        <strong>Intent:</strong> {intent.replace('_', ' ').title()} {confidence_color} <strong>Confidence:</strong> {confidence:.2f}
+    </div>
+    """, unsafe_allow_html=True)
     
     # Handle different intent types
     if intent == "revenue_vs_budget":
@@ -166,6 +472,12 @@ def display_response(response):
             chart = create_revenue_vs_budget_chart(result)
             if chart:
                 st.plotly_chart(chart, use_container_width=True)
+            else:
+                st.markdown("""
+                <div class="info-message">
+                    📊 Chart not displayed: Insufficient or invalid data for revenue vs budget comparison.
+                </div>
+                """, unsafe_allow_html=True)
             
             # Summary text
             variance_text = "above" if result['variance'] > 0 else "below"
@@ -193,6 +505,12 @@ def display_response(response):
             chart = create_gross_margin_trend_chart(result)
             if chart:
                 st.plotly_chart(chart, use_container_width=True)
+            else:
+                st.markdown("""
+                <div class="info-message">
+                    📊 Chart not displayed: Insufficient data points for meaningful trend analysis.
+                </div>
+                """, unsafe_allow_html=True)
             
             # Summary text
             trend_direction = "improving" if result['margins'][-1] > result['margins'][0] else "declining"
@@ -213,6 +531,12 @@ def display_response(response):
             chart = create_opex_breakdown_chart(result)
             if chart:
                 st.plotly_chart(chart, use_container_width=True)
+            else:
+                st.markdown("""
+                <div class="info-message">
+                    📊 Chart not displayed: Insufficient expense categories for meaningful breakdown.
+                </div>
+                """, unsafe_allow_html=True)
             
             # Breakdown table
             breakdown_df = pd.DataFrame([
@@ -304,51 +628,82 @@ def display_response(response):
                     chart = create_revenue_vs_budget_chart(chart_data)
                     if chart:
                         st.plotly_chart(chart, use_container_width=True)
+                    else:
+                        st.markdown("""
+                        <div class="info-message">
+                            📊 Chart not displayed: Insufficient or invalid data for revenue vs budget comparison.
+                        </div>
+                        """, unsafe_allow_html=True)
                 
                 elif chart_type == "opex_breakdown" and chart_data:
                     st.markdown("### 📊 OPEX Breakdown Chart")
                     chart = create_opex_breakdown_chart(chart_data)
                     if chart:
                         st.plotly_chart(chart, use_container_width=True)
+                    else:
+                        st.markdown("""
+                        <div class="info-message">
+                            📊 Chart not displayed: Insufficient expense categories for meaningful breakdown.
+                        </div>
+                        """, unsafe_allow_html=True)
                 
                 elif chart_type == "trend" and chart_data:
                     st.markdown("### 📈 Trend Analysis Chart")
-                    # Add trend chart creation here if needed
+                    chart = create_gross_margin_trend_chart(chart_data)
+                    if chart:
+                        st.plotly_chart(chart, use_container_width=True)
+                    else:
+                        st.markdown("""
+                        <div class="info-message">
+                            📊 Chart not displayed: Insufficient data points for meaningful trend analysis.
+                        </div>
+                        """, unsafe_allow_html=True)
         elif 'message' in result:
-            st.info(result['message'])
-            st.write("**Suggested questions:**")
+            st.markdown(f"""
+            <div class="info-message">
+                {result['message']}
+            </div>
+            """, unsafe_allow_html=True)
+            st.markdown("**Suggested questions:**")
             for suggestion in result['suggestions']:
-                st.write(f"• {suggestion}")
-            st.write(f"**Example:** {result['example']}")
+                st.markdown(f"• {suggestion}")
+            st.markdown(f"**Example:** {result['example']}")
         else:
-            st.info("Analysis completed. Check the AI insights above for detailed results.")
+            st.markdown("""
+            <div class="info-message">
+                ✅ Analysis completed. Check the AI insights above for detailed results.
+            </div>
+            """, unsafe_allow_html=True)
 
 def main():
     """Main Streamlit app"""
     
     # Header
     st.markdown('<h1 class="main-header">📊 CFO Copilot</h1>', unsafe_allow_html=True)
-    st.markdown("**AI-powered financial assistant for data-driven insights**")
+    st.markdown('<p class="subtitle">AI-powered financial assistant for data-driven insights</p>', unsafe_allow_html=True)
     
     # Initialize agent
     agent = initialize_agent()
     
     # Sidebar
     with st.sidebar:
-        st.header("📈 Available Metrics")
+        st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+        st.markdown("### 📈 Available Metrics")
         
         # Get available data info
         data_info = agent.get_available_metrics()
         if data_info['success']:
-            st.write("**Data Sources:**")
+            st.markdown("**Data Sources:**")
             for data_type, info in data_info['data_info'].items():
-                st.write(f"• {data_type.title()}: {info['rows']} records")
+                st.markdown(f"• **{data_type.title()}**: {info['rows']} records")
             
-            st.write("**Supported Metrics:**")
+            st.markdown("**Supported Metrics:**")
             for metric in data_info['available_metrics']:
-                st.write(f"• {metric}")
+                st.markdown(f"• {metric}")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.header("💡 Sample Questions")
+        st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+        st.markdown("### 💡 Sample Questions")
         sample_questions = [
             "What was June 2025 revenue vs budget in USD?",
             "Show Gross Margin % trend for the last 3 months",
@@ -358,32 +713,42 @@ def main():
         ]
         
         for question in sample_questions:
-            if st.button(question, key=f"sample_{question}"):
+            if st.button(question, key=f"sample_{question}", use_container_width=True):
                 st.session_state.user_query = question
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.header("🔧 Settings")
-        if st.button("Reload Data"):
+        st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+        st.markdown("### 🔧 Settings")
+        if st.button("🔄 Reload Data", use_container_width=True):
             st.session_state.agent = CFOAgent()
-            st.success("Data reloaded successfully!")
+            st.success("✅ Data reloaded successfully!")
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Main chat interface
-    st.header("💬 Ask Your CFO Questions")
+    st.markdown("### 💬 Ask Your CFO Questions")
     
-    # Chat input
-    user_query = st.text_input(
-        "Ask a question about your financial data:",
-        value=st.session_state.get('user_query', ''),
-        placeholder="e.g., What was June 2025 revenue vs budget in USD?"
-    )
+    # Chat input with better styling
+    col1, col2 = st.columns([4, 1])
     
-    # Process query button
-    if st.button("Analyze", type="primary") or user_query:
+    with col1:
+        user_query = st.text_input(
+            "Ask a question about your financial data:",
+            value=st.session_state.get('user_query', ''),
+            placeholder="e.g., What was June 2025 revenue vs budget in USD?",
+            label_visibility="collapsed"
+        )
+    
+    with col2:
+        analyze_clicked = st.button("🚀 Analyze", type="primary", use_container_width=True)
+    
+    # Process query
+    if analyze_clicked or user_query:
         if user_query:
-            with st.spinner("Analyzing your question..."):
+            with st.spinner("🔍 Analyzing your question..."):
                 response = agent.process_query(user_query)
                 display_response(response)
         else:
-            st.warning("Please enter a question to analyze.")
+            st.warning("⚠️ Please enter a question to analyze.")
 
 if __name__ == "__main__":
     main()

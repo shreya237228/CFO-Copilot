@@ -500,7 +500,7 @@ Always be professional, accurate, and focus on what matters most to executives."
             return f"Error generating summary: {e}"
     
     def _extract_chart_data(self, query: str, data_summary: str) -> Dict[str, Any]:
-        """Extract data for chart generation based on query type"""
+        """Extract data for chart generation based on query type using actual data"""
         
         try:
             query_lower = query.lower()
@@ -509,17 +509,17 @@ Always be professional, accurate, and focus on what matters most to executives."
             # Revenue vs Budget comparison
             if any(word in query_lower for word in ['revenue', 'budget', 'vs', 'comparison', 'actual']):
                 chart_data["chart_type"] = "revenue_vs_budget"
-                chart_data["data"] = self._extract_revenue_budget_data(query, data_summary)
+                chart_data["data"] = self._get_revenue_budget_data_from_calculator(query)
             
             # OPEX breakdown
             elif any(word in query_lower for word in ['opex', 'operating expense', 'expense', 'breakdown', 'category']):
                 chart_data["chart_type"] = "opex_breakdown"
-                chart_data["data"] = self._extract_opex_data(query, data_summary)
+                chart_data["data"] = self._get_opex_data_from_calculator(query)
             
             # Trend analysis
             elif any(word in query_lower for word in ['trend', 'over time', 'monthly', 'quarterly', 'growth']):
                 chart_data["chart_type"] = "trend"
-                chart_data["data"] = self._extract_trend_data(query, data_summary)
+                chart_data["data"] = self._get_trend_data_from_calculator(query)
             
             return chart_data
             
@@ -668,6 +668,85 @@ Always be professional, accurate, and focus on what matters most to executives."
         except Exception as e:
             print(f"⚠️ Currency conversion failed: {e}")
             return amount
+
+    def _get_revenue_budget_data_from_calculator(self, query: str) -> Dict[str, Any]:
+        """Get revenue vs budget data directly from calculator"""
+        try:
+            # Extract month and year from query if present
+            month, year = self._extract_month_year_from_query(query)
+            return self.calculator.get_revenue_vs_budget(month, year)
+        except Exception as e:
+            print(f"⚠️ Error getting revenue budget data: {e}")
+            return {}
+    
+    def _get_opex_data_from_calculator(self, query: str) -> Dict[str, Any]:
+        """Get OPEX breakdown data directly from calculator"""
+        try:
+            # Extract month and year from query if present
+            month, year = self._extract_month_year_from_query(query)
+            return self.calculator.get_opex_breakdown(month, year)
+        except Exception as e:
+            print(f"⚠️ Error getting OPEX data: {e}")
+            return {}
+    
+    def _get_trend_data_from_calculator(self, query: str) -> Dict[str, Any]:
+        """Get trend data directly from calculator"""
+        try:
+            # Extract period from query if present
+            period_months = self._extract_period_from_query(query)
+            return self.calculator.get_gross_margin_trend(period_months)
+        except Exception as e:
+            print(f"⚠️ Error getting trend data: {e}")
+            return {}
+    
+    def _extract_month_year_from_query(self, query: str) -> tuple:
+        """Extract month and year from query"""
+        import re
+        
+        # Look for month names
+        month_patterns = {
+            'january': 'January', 'jan': 'January',
+            'february': 'February', 'feb': 'February', 
+            'march': 'March', 'mar': 'March',
+            'april': 'April', 'apr': 'April',
+            'may': 'May',
+            'june': 'June', 'jun': 'June',
+            'july': 'July', 'jul': 'July',
+            'august': 'August', 'aug': 'August',
+            'september': 'September', 'sep': 'September',
+            'october': 'October', 'oct': 'October',
+            'november': 'November', 'nov': 'November',
+            'december': 'December', 'dec': 'December'
+        }
+        
+        query_lower = query.lower()
+        month = None
+        year = None
+        
+        # Find month
+        for pattern, month_name in month_patterns.items():
+            if pattern in query_lower:
+                month = month_name
+                break
+        
+        # Find year (4 digits)
+        year_match = re.search(r'\b(20\d{2})\b', query)
+        if year_match:
+            year = int(year_match.group(1))
+        
+        return month, year
+    
+    def _extract_period_from_query(self, query: str) -> int:
+        """Extract period (number of months) from query"""
+        import re
+        
+        # Look for numbers followed by "month" or similar
+        period_match = re.search(r'(\d+)\s*(?:month|months|period)', query.lower())
+        if period_match:
+            return int(period_match.group(1))
+        
+        # Default to 3 months
+        return 3
 
     def reset_conversation(self):
         """Reset conversation history"""
